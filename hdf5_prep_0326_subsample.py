@@ -1,3 +1,12 @@
+# store images in an HDF5 database and perform classification using convolutional neural networks
+#
+# with the help of Keras documentation and extensive googling/stackoverflow
+#
+# Kun-Hsing Yu
+# 2017.12.10, simplified 2018.4.4
+# Chenyue Lu 2020.03.26 only took first section (HDF5 prep) because this only needs to be done once
+
+
 # define the path to hdf5 files, train.txt, test.txt, and image files
 hdf5_path = '/home/cl427/GBM/results/train_vs_test_by_pt/subsample_0326.hdf5'
 
