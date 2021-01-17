@@ -1,4 +1,4 @@
-# tune hyperparameters on multi-class classification task on IvyGAP subset using DenseNet
+# tune hyperparameters on multi-class classification task on IvyGAP subset using DenseNet as example
 # 
 # 2020.04.11 Chenyue Lu
 
@@ -59,14 +59,6 @@ sub_val_labels[sub_val_labels ==3] = 2
 sub_val_labels[sub_val_labels ==8] = 3
 sub_val_labels[sub_val_labels ==9] = 4
 y_val = to_categorical(sub_val_labels).astype('int')
-
-#sub_test_indices = np.where(np.in1d(test_labels,[0,1,3,8,9]))[0]
-#sub_test_images = hdf5_file.root.test_img[sub_test_indices,:,:,:]
-#sub_test_labels = test_labels[sub_test_indices]
-#sub_test_labels[sub_test_labels ==3] = 2
-#sub_test_labels[sub_test_labels ==8] = 3
-#sub_test_labels[sub_test_labels ==9] = 4
-#y_test = to_categorical(sub_test_labels)
 
 num_classes = len([0,1,3,8,9])
 
@@ -139,7 +131,8 @@ def talos_model(sub_train_images, y_train, sub_val_images, y_val, params):
         layer.trainable = True
     model.compile(optimizer=params['optimizer'](lr=lr_normalizer(params['lr'], params['optimizer'])),
             loss=loss_fx,
-            metrics=metrics)
+            metrics=metrics,
+            class_weight=class_weight)
 
     out = model.fit_generator(
         imageLoader(sub_train_images,y_train,params['batch_size']),
@@ -155,7 +148,7 @@ def talos_model(sub_train_images, y_train, sub_val_images, y_val, params):
 
 #print(f"y_train[0]: {y_train[0]}")
 # hyperparameter optimization
-t = ta.Scan(x=sub_train_images, y=y_train, x_val=sub_val_images, y_val=y_val, params=p, model=talos_model,experiment_name = 'exp_37')
+t = ta.Scan(x=sub_train_images, y=y_train, x_val=sub_val_images, y_val=y_val, params=p, model=talos_model,experiment_name = 'exp_'+exp_id)
 
 ta.Deploy(t,exp_id, metric="val_accuracy", asc=False)
 
